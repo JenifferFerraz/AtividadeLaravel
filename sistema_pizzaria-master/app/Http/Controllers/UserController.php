@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\Auth;
  * Class UserController
  *
  * @package App\Http\Controllers
- * @author Vinícius Siqueira
- * @link https://github.com/ViniciusSCS
- * @date 2024-08-23 21:48:54
- * @copyright UniEVANGÉLICA
  */
 class UserController extends Controller
 {
@@ -151,5 +147,38 @@ class UserController extends Controller
             'message' => 'Usuário deletado com sucesso!!'
         ];
 
+    }
+
+    /**
+     * Update the specified resource in storage with different logic.
+     */
+    public function updateJeniffer(Request $request, string $id)
+    {
+        $data = $request->all();
+
+        $user = User::find($id);
+
+        if(!$user){
+            return [
+                'status' => 404,
+                'message' => 'Usuário não encontrado! Que triste!',
+                'user' => $user
+            ];
+        }
+
+        $user->name = $data['name'] ?? $user->name;
+        $user->email = $data['email'] ?? $user->email;
+
+        if (!empty($data['password'])) {
+            $user->password = bcrypt($data['password']);
+        }
+
+        $user->save();
+
+        return [
+            'status' => 200,
+            'message' => 'Usuário atualizado com lógica diferente!',
+            'user' => $user
+        ];
     }
 }
